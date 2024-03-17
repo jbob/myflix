@@ -1,0 +1,67 @@
+---
+version: "2.1"
+services:
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+    volumes:
+      - ./radarr-config:/config
+      - /mnt/tank/videos/filme/:/movies #optional
+      - /mnt/tank/incoming:/downloads #optional
+    ports:
+      - "192.168.178.4:7878:7878"
+    restart: unless-stopped
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+    volumes:
+      - ./sonarr-config:/config
+      - /mnt/tank/videos/serien/:/tv #optional
+      - /mnt/tank/incoming:/downloads #optional
+    ports:
+      - "192.168.178.4:8989:8989"
+    restart: unless-stopped
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    environment:
+      - PUID=1000
+      - GUID=1000
+      - TZ=Europe/Berlin
+    volumes:
+      - ./jackett-config:/config
+      #- ./jackett-downloads:/downloads
+    ports:
+      - "192.168.178.4:9117:9117"
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    environment:
+      - PUID=1000
+      - GUID=1000
+      - TZ=Europe/Berlin
+    ports:
+      - "192.168.178.4:8191:8191"
+  deluge:
+    image: lscr.io/linuxserver/deluge:latest
+    container_name: deluge
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Berlin
+    volumes:
+      - ./deluge-config:/config
+      - /mnt/tank/incoming:/downloads
+    ports:
+      - "192.168.178.4:8112:8112"
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
